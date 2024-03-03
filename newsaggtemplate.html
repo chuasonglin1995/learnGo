@@ -14,7 +14,7 @@
   <tbody>
     {{ range $key, $value:= .News }}
       <tr>
-        <td><a href="{{$value.Location}}" target="_blank">{{ $key }}</a>A title</td>
+        <td><a href="{{$value.Location}}" target="_blank">{{ $key }}</a></td>
         <td>{{ $value.PublicationDate }}</td>
       </tr>
     {{ end }}
