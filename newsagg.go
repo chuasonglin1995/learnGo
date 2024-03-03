@@ -35,12 +35,9 @@ type UrlSet struct {
 
 type Url struct {
 	Loc string `xml:"loc"`
+	News News `xml:"news"`
+	ChangeFreq string `xml:"changefreq"`
 }
-
-
-// func (u Url) String() string {
-// 	return fmt.Sprintf(u.Loc)
-// }
 
 type News struct {
 	Publication      Publication `xml:"publication"`
@@ -53,22 +50,25 @@ type Publication struct {
 	Language string `xml:"language"`
 }
 
+type NewsMap struct {
+	Location string
+	Language  string
+}
 
 func main() {
 
 	var s UrlSet
-	var n News
-
-	resp, _ := http.Get("https://www.washingtonpost.com/news-world-sitemap.xml")
-	bytes, _ := ioutil.ReadAll(resp.Body)
-	//resp.Body.Close()
-	xml.Unmarshal(bytes, &s)
+	news_map := make(map[string]NewsMap)
 
 	// because range returns 2 values (index, value)
+	resp, _ := http.Get("https://www.washingtonpost.com/news-world-sitemap.xml")
+	bytes, _ := ioutil.ReadAll(resp.Body)
+	resp.Body.Close()
+	xml.Unmarshal(bytes, &s)
+
+
 	for _, Url := range s.Url {
-		fmt.Printf("%s\n", Url.Loc)
-		resp, _ := http.Get(Url.Loc)
-		bytes, _ := ioutil.ReadAll(resp.Body)
-		xml.Unmarshal(bytes, &n)
+		news_map[Url.News.Title] = NewsMap{Url.Loc, Url.News.Publication.Language}
 	}
+	fmt.Println(news_map)
 }
